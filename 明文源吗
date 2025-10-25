@@ -1706,7 +1706,7 @@ async function handleSubscriptionPage(request, user = null) {
                 });
             } else {
                 var encodedUrl = encodeURIComponent(subscriptionUrl);
-                var apiUrl = "https://s.jhb.edu.kg/sub?target=" + clientType + "&url=" + encodedUrl + "&insert=false";
+                var apiUrl = "https://subapi.jxh.ovh:59999/sub?target=" + clientType + "&url=" + encodedUrl + "&insert=false";
                 document.getElementById("clientSubscriptionUrl").textContent = apiUrl;
                 document.getElementById("clientSubscriptionUrl").style.display = "block";
                 navigator.clipboard.writeText(apiUrl).then(function() {
