@@ -401,10 +401,10 @@ export default {
 			}
 
 			// 优先使用KV配置，然后使用环境变量，如果都没有则使用默认URL
-			preferredIPsURL = getConfigValue('yxURL', env.yxURL || env.YXURL) || 'https://raw.jxh.ovh:59999/https://raw.githubusercontent.com/JacksonJiangxh/proxyip/main/yxURL.txt';
+			preferredIPsURL = getConfigValue('yxURL', env.yxURL || env.YXURL) || 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
 			
 			// 如果yxURL不是默认值，清空内置优选IP和域名
-			const defaultURL = 'https://raw.jxh.ovh:59999/https://raw.githubusercontent.com/JacksonJiangxh/proxyip/main/yxURL.txt';
+			const defaultURL = 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
 			if (preferredIPsURL !== defaultURL) {
 				backupIPs = [];
 				directDomains.length = 0;
@@ -900,7 +900,7 @@ async function handleSubscriptionRequest(request, user, url = null) {
         const domainList = directDomains.map(d => ({ ip: d.domain, isp: d.name || d.domain }));
         finalLinks.push(...generateLinksFromSource(domainList, user, workerDomain));
 
-        const defaultURL = 'https://raw.jxh.ovh:59999/https://raw.githubusercontent.com/JacksonJiangxh/proxyip/main/yxURL.txt';
+        const defaultURL = 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
         if (preferredIPsURL === defaultURL) {
         }
 
@@ -1621,7 +1621,7 @@ async function handleSubscriptionPage(request, user = null) {
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">优选IP来源URL (yxURL):</label>
-                        <input type="text" id="preferredIPsURL" placeholder="默认: https://raw.jxh.ovh:59999/https://raw.githubusercontent.com/JacksonJiangxh/proxyip/main/yxURL.txt" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
+                        <input type="text" id="preferredIPsURL" placeholder="默认: https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
                         <small style="color: #00aa00; font-size: 0.85rem;">自定义优选IP列表来源URL，留空则使用默认地址</small>
                     </div>
                     <div style="margin-bottom: 15px;">
@@ -2206,7 +2206,7 @@ function formatIdentifier(arr, offset = 0) {
 
 async function fetchAndParseNewIPs() {
     // 使用配置的URL，如果没有配置则使用默认URL
-    const url = preferredIPsURL || "https://raw.jxh.ovh:59999/https://raw.githubusercontent.com/JacksonJiangxh/proxyip/main/yxURL.txt";
+    const url = preferredIPsURL || "https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt";
     try {
         const response = await fetch(url);
         if (!response.ok) return [];
@@ -2346,8 +2346,8 @@ async function handleConfigAPI(request) {
                 isSocksEnabled = false;
             }
             
-            const newPreferredIPsURL = getConfigValue('yxURL', '') || 'https://raw.jxh.ovh:59999/https://raw.githubusercontent.com/JacksonJiangxh/proxyip/main/yxURL.txt';
-            const defaultURL = 'https://raw.jxh.ovh:59999/https://raw.githubusercontent.com/JacksonJiangxh/proxyip/main/yxURL.txt';
+            const newPreferredIPsURL = getConfigValue('yxURL', '') || 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
+            const defaultURL = 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
             if (newPreferredIPsURL !== defaultURL) {
                 backupIPs = [];
                 directDomains.length = 0;
