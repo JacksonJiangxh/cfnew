@@ -1,0 +1,82 @@
+name: Deploy Worker Script
+
+on:
+  workflow_dispatch:  # 仅手动触发
+    inputs:
+      source_file:
+        description: '源文件名（默认：少年你相信光吗）'
+        required: false
+        default: '少年你相信光吗'
+        type: string
+      target_file:
+        description: '目标文件名（默认：_worker.js）'
+        required: false
+        default: '_worker.js'
+        type: string
+      zip_name:
+        description: '压缩包名称（默认：Pages.zip）'
+        required: false
+        default: 'Pages.zip'
+        type: string
+
+jobs:
+  deploy-worker:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set variables
+        id: vars
+        run: |
+          SOURCE="${{ github.event.inputs.source_file || '少年你相信光吗' }}"
+          TARGET="${{ github.event.inputs.target_file || '_worker.js' }}"
+          ZIP_NAME="${{ github.event.inputs.zip_name || 'Pages.zip' }}"
+          
+          echo "source_file=$SOURCE" >> $GITHUB_OUTPUT
+          echo "target_file=$TARGET" >> $GITHUB_OUTPUT
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
+          
+          echo "源文件: $SOURCE"
+          echo "目标文件: $TARGET"
+          echo "压缩包: $ZIP_NAME"
+      
+      - name: Check if source file exists
+        run: |
+          if [ ! -f "${{ steps.vars.outputs.source_file }}" ]; then
+            echo "❌ 错误：未找到文件 '${{ steps.vars.outputs.source_file }}'"
+            exit 1
+          fi
+          echo "✅ 找到源文件: ${{ steps.vars.outputs.source_file }}"
+      
+      - name: Copy and rename file
+        run: |
+          cp "${{ steps.vars.outputs.source_file }}" "${{ steps.vars.outputs.target_file }}"
+          echo "✅ 已复制为: ${{ steps.vars.outputs.target_file }}"
+      
+      - name: Create zip file
+        run: |
+          zip "${{ steps.vars.outputs.zip_name }}" "${{ steps.vars.outputs.target_file }}"
+          echo "✅ 已创建压缩包: ${{ steps.vars.outputs.zip_name }}"
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: manual-${{ github.run_number }}
+          name: "Manual Deploy #${{ github.run_number }}"
+          body: |
+            ## 手动部署信息
+            
+            - **源文件**: ${{ steps.vars.outputs.source_file }}
+            - **目标文件**: ${{ steps.vars.outputs.target_file }}
+            - **压缩文件**: ${{ steps.vars.outputs.zip_name }}
+            - **触发时间**: ${{ github.event.created_at }}
+          files: ${{ steps.vars.outputs.zip_name }}
+      
+      - name: Output summary
+        run: |
+          echo "## 部署完成" >> $GITHUB_STEP_SUMMARY
+          echo "- 源文件: ${{ steps.vars.outputs.source_file }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 目标文件: ${{ steps.vars.outputs.target_file }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 压缩文件: ${{ steps.vars.outputs.zip_name }}" >> $GITHUB_STEP_SUMMARY
