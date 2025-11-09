@@ -172,36 +172,28 @@ async function setConfigValue(key, value) {
 async function detectWorkerRegion(request) {
     try {
         const cfCountry = request.cf?.country;
-        const colo = request.cf?.colo;
-
-        const countryToRegion = {
-            'US': 'US', 'SG': 'SG', 'JP': 'JP', 'HK': 'HK', 'KR': 'KR',
-            'DE': 'DE', 'SE': 'SE', 'NL': 'NL', 'FI': 'FI', 'GB': 'GB',
-            'CN': 'HK', 'TW': 'HK', 'AU': 'SG', 'CA': 'US',
-            'FR': 'DE', 'IT': 'DE', 'ES': 'DE', 'CH': 'DE',
-            'AT': 'DE', 'BE': 'NL', 'DK': 'SE', 'NO': 'SE', 'IE': 'GB',
-            'IN': 'SG', 'TH': 'SG', 'MY': 'SG', 'VN': 'SG', 'PH': 'SG',
-            'BR': 'US', 'MX': 'US', 'AR': 'US', 'CL': 'US',
-            'ZA': 'GB', 'EG': 'DE', 'TR': 'DE', 'RU': 'FI', 'UA': 'FI'
-        };
-
-        const coloToRegion = {
-            'SIN': 'SG', 'NRT': 'JP', 'HKG': 'HK', 'ICN': 'KR',
-            'LAX': 'US', 'FRA': 'DE', 'AMS': 'NL', 'LHR': 'GB'
-        };
-
-        if (colo && coloToRegion[colo]) {
-            return coloToRegion[colo];
+        
+        if (cfCountry) {
+            const countryToRegion = {
+                'US': 'US', 'SG': 'SG', 'JP': 'JP', 'HK': 'HK', 'KR': 'KR',
+                'DE': 'DE', 'SE': 'SE', 'NL': 'NL', 'FI': 'FI', 'GB': 'GB',
+                'CN': 'HK', 'TW': 'HK', 'AU': 'SG', 'CA': 'US',
+                'FR': 'DE', 'IT': 'DE', 'ES': 'DE', 'CH': 'DE',
+                'AT': 'DE', 'BE': 'NL', 'DK': 'SE', 'NO': 'SE', 'IE': 'GB'
+            };
+            
+            if (countryToRegion[cfCountry]) {
+                return countryToRegion[cfCountry];
+            }
         }
-
-        if (cfCountry && countryToRegion[cfCountry]) {
-            return countryToRegion[cfCountry];
-        }
-        return 'JP'; // 
+        
+        return 'HK';
+        
     } catch (error) {
-        return 'JP';
+        return 'HK';
     }
 }
+
 async function checkIPAvailability(domain, port = 443, timeout = 2000) {
     try {
         const controller = new AbortController();
@@ -245,7 +237,7 @@ async function getBestBackupIP(workerRegion = '') {
 function getNearbyRegions(region) {
     const nearbyMap = {
         'US': ['SG', 'JP', 'HK', 'KR'],  // 美国 -> 亚太地区
-        'SG': ['KR', 'US'],  // 新加坡 -> 亚太地区
+        'SG': ['JP', 'HK', 'KR', 'US'],  // 新加坡 -> 亚太地区
         'JP': ['SG', 'HK', 'KR', 'US'], // 日本 -> 亚太地区
         'HK': ['SG', 'JP', 'KR', 'US'], // 香港 -> 亚太地区
         'KR': ['JP', 'HK', 'SG', 'US'], // 韩国 -> 亚太地区
