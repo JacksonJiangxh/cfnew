@@ -190,17 +190,16 @@ async function detectWorkerRegion(request) {
             'LAX': 'US', 'FRA': 'DE', 'AMS': 'NL', 'LHR': 'GB'
         };
 
-        if (cfCountry && countryToRegion[cfCountry]) {
-            return countryToRegion[cfCountry];
-        }
-
         if (colo && coloToRegion[colo]) {
             return coloToRegion[colo];
         }
 
-        return 'HK'; // 
+        if (cfCountry && countryToRegion[cfCountry]) {
+            return countryToRegion[cfCountry];
+        }
+        return 'JP'; // 
     } catch (error) {
-        return 'HK';
+        return 'JP';
     }
 }
 async function checkIPAvailability(domain, port = 443, timeout = 2000) {
@@ -246,7 +245,7 @@ async function getBestBackupIP(workerRegion = '') {
 function getNearbyRegions(region) {
     const nearbyMap = {
         'US': ['SG', 'JP', 'HK', 'KR'],  // 美国 -> 亚太地区
-        'SG': ['JP', 'HK', 'KR', 'US'],  // 新加坡 -> 亚太地区
+        'SG': ['KR', 'US'],  // 新加坡 -> 亚太地区
         'JP': ['SG', 'HK', 'KR', 'US'], // 日本 -> 亚太地区
         'HK': ['SG', 'JP', 'KR', 'US'], // 香港 -> 亚太地区
         'KR': ['JP', 'HK', 'SG', 'US'], // 韩国 -> 亚太地区
