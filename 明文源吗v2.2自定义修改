@@ -198,9 +198,9 @@ async function detectWorkerRegion(request) {
             return coloToRegion[colo];
         }
 
-        return 'SG'; // ✅ 改为更中性的默认地区
+        return 'HK'; // 
     } catch (error) {
-        return 'SG';
+        return 'HK';
     }
 }
 async function checkIPAvailability(domain, port = 443, timeout = 2000) {
