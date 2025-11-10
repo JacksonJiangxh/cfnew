@@ -20,10 +20,10 @@ let ev = true;
 let et = false; 
 let ex = false;  
 let tp = '';  
+// 修改了默认的订阅转换后端
+let scu = 'https://subapi.jiangxh.ggff.net/sub';  
 
-let scu = 'https://url.v1.mk/sub';  
-
-let epd = true;   
+let epd = false;   
 let epi = true;       
 let egi = true;          
 
@@ -429,8 +429,8 @@ export default {
 			if (xhttpControl !== undefined && xhttpControl !== '') {
 				ex = xhttpControl === 'yes' || xhttpControl === true || xhttpControl === 'true';
 			}
-			
-			scu = getConfigValue('scu', env.scu) || 'https://url.v1.mk/sub';
+			// 修改了默认的订阅转换后端
+			scu = getConfigValue('scu', env.scu) || 'https://subapi.jiangxh.ggff.net/sub';
 			
 			const preferredDomainsControl = getConfigValue('epd', env.epd);
 			if (preferredDomainsControl !== undefined && preferredDomainsControl !== '') {
@@ -451,15 +451,13 @@ export default {
 				ev = true;
 			}
 
-		piu = getConfigValue('yxURL', env.yxURL || env.YXURL) || 'https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt';
+		piu = getConfigValue('yxURL', env.yxURL || env.YXURL) || 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
 		
 		cp = getConfigValue('d', env.d || env.D) || '';
 		
-			const defaultURL = 'https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt';
+			const defaultURL = 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
 		if (piu !== defaultURL) {
-				directDomains.length = 0;
-				customPreferredIPs = [];
-				customPreferredDomains = [];
+// 删除了“如果yxURL不是默认值，清空内置优选IP和域名”的逻辑
 			}
 
 			const url = new URL(request.url);
@@ -1273,29 +1271,11 @@ async function handleSubscriptionRequest(request, user, url = null) {
         const domainList = directDomains.map(d => ({ ip: d.domain, isp: d.name || d.domain }));
             await addNodesFromList(domainList);
         }
-
+// 修改了默认的yxURL
         if (epi) {
-        const defaultURL = 'https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt';
+        const defaultURL = 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
             if (piu === defaultURL) {
-            try {
-                const dynamicIPList = await fetchDynamicIPs();
-                if (dynamicIPList.length > 0) {
-                        await addNodesFromList(dynamicIPList);
-                }
-            } catch (error) {
-                if (!currentWorkerRegion) {
-                    currentWorkerRegion = await detectWorkerRegion(request);
-                }
-                
-                const bestBackupIP = await getBestBackupIP(currentWorkerRegion);
-                if (bestBackupIP) {
-                    fallbackAddress = bestBackupIP.domain;
-                    fallbackPort = bestBackupIP.port.toString();
-                    
-                    const backupList = [{ ip: fallbackAddress, isp: 'ProxyIP-' + currentWorkerRegion }];
-                        await addNodesFromList(backupList);
-                    }
-                }
+// 这里删除了爬取wetest优选ip的逻辑
             }
         }
 
@@ -1917,7 +1897,7 @@ async function handleSubscriptionPage(request, user = null) {
                 trojanPasswordHint: '设置自定义 Trojan 密码。留空则使用 UUID。客户端会自动对密码进行 SHA224 哈希。',
                 protocolHint: '可以同时启用多个协议。订阅将生成选中协议的节点。<br>• VLESS WS: 基于 WebSocket 的标准协议<br>• Trojan: 使用 SHA224 密码认证<br>• xhttp: 基于 HTTP POST 的伪装协议（需要绑定自定义域名并开启 gRPC）',
                 saveProtocol: '保存协议配置',
-                subscriptionConverterPlaceholder: '默认: https://url.v1.mk/sub',
+                subscriptionConverterPlaceholder: '默认: https://subapi.jiangxh.ggff.net/sub',
                 subscriptionConverterHint: '自定义订阅转换API地址，留空则使用默认地址',
                 builtinPreferredHint: '控制订阅中包含哪些内置优选节点。默认全部启用。',
                 apiEnabledDefault: '默认（关闭API）',
@@ -2024,7 +2004,7 @@ async function handleSubscriptionPage(request, user = null) {
                 trojanPasswordHint: 'رمز عبور Trojan سفارشی را تنظیم کنید. اگر خالی بگذارید از UUID استفاده می‌شود. کلاینت به طور خودکار رمز عبور را با SHA224 هش می‌کند.',
                 protocolHint: 'می‌توانید چندین پروتکل را همزمان فعال کنید. اشتراک گره‌های پروتکل‌های انتخاب شده را تولید می‌کند.<br>• VLESS WS: پروتکل استاندارد مبتنی بر WebSocket<br>• Trojan: احراز هویت با رمز عبور SHA224<br>• xhttp: پروتکل استتار مبتنی بر HTTP POST (نیاز به اتصال دامنه سفارشی و فعال‌سازی gRPC دارد)',
                 saveProtocol: 'ذخیره تنظیمات پروتکل',
-                subscriptionConverterPlaceholder: 'پیش‌فرض: https://url.v1.mk/sub',
+                subscriptionConverterPlaceholder: 'پیش‌فرض: https://subapi.jiangxh.ggff.net/sub',
                 subscriptionConverterHint: 'آدرس API تبدیل اشتراک سفارشی، اگر خالی بگذارید از آدرس پیش‌فرض استفاده می‌شود',
                 builtinPreferredHint: 'کنترل اینکه کدام گره‌های ترجیحی داخلی در اشتراک گنجانده شوند. به طور پیش‌فرض همه فعال هستند.',
                 apiEnabledDefault: 'پیش‌فرض (بستن API)',
@@ -2414,7 +2394,7 @@ async function handleSubscriptionPage(request, user = null) {
                     </div>
                     <div style="margin-bottom: 15px;">
                             <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">${t.preferredIPsURL}</label>
-                            <input type="text" id="preferredIPsURL" placeholder="${isFarsi ? 'پیش‌فرض: https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt' : '默认: https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt'}" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
+                            <input type="text" id="preferredIPsURL" placeholder="${isFarsi ? 'پیش‌فرض: https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt' : '默认: https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt'}" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
                             <small style="color: #00aa00; font-size: 0.85rem;">${isFarsi ? 'URL منبع لیست IP ترجیحی سفارشی، اگر خالی بگذارید از آدرس پیش‌فرض استفاده می‌شود' : '自定义优选IP列表来源URL，留空则使用默认地址'}</small>
                     </div>
                     <div style="margin-bottom: 15px;">
@@ -4114,8 +4094,8 @@ function formatIdentifier(arr, offset = 0) {
 }
 
 async function fetchAndParseNewIPs() {
-    
-    const url = piu || "https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt";
+    // 修改了默认的yxURL
+    const url = piu || "https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt";
     try {
         const response = await fetch(url);
         if (!response.ok) return [];
@@ -4290,9 +4270,9 @@ async function handleConfigAPI(request) {
             if (newConfig.yx !== undefined) {
                 updateCustomPreferredFromYx();
             }
-            
-            const newPreferredIPsURL = getConfigValue('yxURL', '') || 'https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt';
-            const defaultURL = 'https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt';
+            // 修改了默认的yxURL
+            const newPreferredIPsURL = getConfigValue('yxURL', '') || 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
+            const defaultURL = 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
             if (newPreferredIPsURL !== defaultURL) {
                 directDomains.length = 0;
                 customPreferredIPs = [];
@@ -4613,8 +4593,8 @@ function updateConfigVariables() {
     if (!ev && !et && !ex) {
         ev = true;
     }
-    
-    scu = getConfigValue('scu', '') || 'https://url.v1.mk/sub';
+    // 修改了默认的订阅转换后端
+    scu = getConfigValue('scu', '') || 'https://subapi.jiangxh.ggff.net/sub';
     
     const preferredDomainsControl = getConfigValue('epd', '');
     if (preferredDomainsControl !== undefined && preferredDomainsControl !== '') {
@@ -4632,8 +4612,8 @@ function updateConfigVariables() {
     }
     
     cp = getConfigValue('d', '') || '';
-    
-    piu = getConfigValue('yxURL', '') || 'https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt';
+    // 修改了默认的yxURL
+    piu = getConfigValue('yxURL', '') || 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
     
     const envFallback = getConfigValue('p', '');
     if (envFallback) {
@@ -4671,8 +4651,8 @@ function updateConfigVariables() {
     } else {
         disablePreferred = false;
     }
-    
-    const defaultURL = 'https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt';
+    // 修改了默认的yxURL
+    const defaultURL = 'https://raw.githubusercontent.com/JacksonJiangxh/Clash-Rule/refs/heads/main/yxURL.txt';
     if (piu !== defaultURL) {
         directDomains.length = 0;
         customPreferredIPs = [];
