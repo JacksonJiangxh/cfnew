@@ -1,4 +1,4 @@
-# CFnew - 终端 v2.2
+# CFnew - 终端 v2.3
 
 <div align="center" style="margin-bottom: 20px;">
 
@@ -15,7 +15,8 @@
 [![License](https://img.shields.io/badge/License-MIT-orange)]()
 
 </div>
-
+## ✨ v2.3 核心特性
+修了就近响应
 ## ✨ v2.1 核心特性
 
 - 🎭 **多协议支持** - VLESS + Trojan + xhttp，自由切换
